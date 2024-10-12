@@ -24,12 +24,12 @@ app.use("/api/auth", authRouter);
 app.use("/api/users", auth, userRouter);
 
 app.listen(PORT, () => {
-	try {
-		mongoose.connect(DB_URI);
-		console.log("Database connected successfully!");
-	} catch (error) {
-		console.log(`Error connecting to server: ${error.message}`);
-	}
+  try {
+    mongoose.connect(DB_URI);
+    console.log("Database connected successfully!");
+  } catch (error) {
+    console.log(`Error connecting to server: ${error.message}`);
+  }
 
-	console.log(`Server listening on port ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);
 });

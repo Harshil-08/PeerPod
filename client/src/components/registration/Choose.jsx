@@ -4,7 +4,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { updateUserRole } from "../../utils/user";
 
 export const ChoosePage = () => {
-  const ROLES = ["FT", "ST", "TT", "BT", "Alumni"];
+  const ROLES = ["FY", "SY", "TY", "BY", "Alumni"];
   const [role, setRole] = useState("");
   const [roleError, setRoleError] = useState("");
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ export const ChoosePage = () => {
         role: role,
       });
       setRoleError("");
-      navigate("/");
+      navigate("/chat");
     }
   };
 

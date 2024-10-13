@@ -18,12 +18,6 @@ export default function Home() {
       <p>
         We hope you use the platform wisely! Click on any of the room to chat
       </p>
-      <button
-        className="bg-red-400 hover:bg-red-500 p-2 w-fit rounded-md"
-        onClick={logout}
-      >
-        Log out
-      </button>
     </div>
   );
 }

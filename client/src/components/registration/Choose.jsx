@@ -4,7 +4,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { updateUserRole } from "../../utils/user";
 
 export const ChoosePage = () => {
-  const ROLES = ["FY", "SY", "TY", "BY", "Alumni"];
+  const ROLES = ["fy", "sy", "ty", "by", "alumni"];
   const [role, setRole] = useState("");
   const [roleError, setRoleError] = useState("");
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ export const ChoosePage = () => {
           </option>
           {ROLES.map((role, index) => (
             <option key={index} value={role}>
-              {role}
+              {role.toUpperCase()}
             </option>
           ))}
         </select>

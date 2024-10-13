@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { useRoom } from "../hooks/useRoom";
 
 export const SideBar = () => {
   return (
@@ -52,12 +53,7 @@ export const SideBar = () => {
       >
         <div className="flex flex-col justify-between h-full px-3 pb-4 overflow-y-auto bg-white">
           <ul className="space-y-2 font-medium">
-            <List name={"fy"} noti={1} />
-            <List name={"sy"} noti={2} />
-            <List name={"ty"} noti={3} />
-            <List name={"by"} noti={3} />
-            <List name={"alumni"} noti={4} />
-            <List name={"Faculty"} noti={1} />
+            <List />
           </ul>
           <ul className="flex flex-col gap-2">
             <div className="bg-gray-400 w-full h-0.5"></div>
@@ -69,23 +65,37 @@ export const SideBar = () => {
   );
 };
 
-const List = ({ name, noti }) => {
+const List = () => {
   const location = useLocation();
-  const isActive = location.pathname.startsWith(`/chat/${name}`);
+  const { rooms, userRole } = useRoom();
+  const accessibleRooms = Object.values(rooms).filter(
+    (room) =>
+      room.allowedRoles.includes(userRole) ||
+      userRole === "faculty" ||
+      userRole === "alumni"
+  );
+  const noti = 1;
   return (
-    <li>
-      <Link
-        to={`/chat/${name}`}
-        className={`flex justify-between items-center p-2 text-gray-900 rounded-lg ${
-          isActive ? "bg-gray-100" : ""
-        } dark:hover:bg-gray-100 group`}
-      >
-        <span className="ms-3">{name.toUpperCase()}</span>
-        <div className="flex items-center justify-center ml-auto text-xs text-white bg-red-500 h-4 w-4 rounded leading-none">
-          {noti}
-        </div>
-      </Link>
-    </li>
+    <ul>
+      {accessibleRooms.map((room) => {
+        const isActive = location.pathname === `/chat/${room.id}`;
+        return (
+          <li key={room.id}>
+            <Link
+              to={`/chat/${room.id}`}
+              className={`flex justify-between items-center p-2 text-gray-900 rounded-lg ${
+                isActive ? "bg-gray-100" : ""
+              } dark:hover:bg-gray-100 group`}
+            >
+              <span className="ms-3">{room.name}</span>
+              <div className="flex items-center justify-center ml-auto text-xs text-white bg-red-500 h-4 w-4 rounded leading-none">
+                {noti}
+              </div>
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
   );
 };
 

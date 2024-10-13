@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-export const Chat = ({ messages }) => {
+export const Chat = ({ roomId }) => {
+  const messages = ["Hello"];
   const [allMessages, setAllMessages] = useState(messages);
   const [newMessage, setNewMessage] = useState("");
 

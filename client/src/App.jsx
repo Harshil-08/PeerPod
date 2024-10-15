@@ -12,32 +12,27 @@ import { ChatRoom } from "./components/chats/ChatRoom.jsx";
 import { RoomProvider } from "./contexts/RoomContext.jsx";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <AuthProvider>
-        <RoomProvider>
-          <Routes>
-            <Route path="/" element={<Welcome />} />
-            <Route
-              path="/chat"
-              element={
-                <ProtectedRoute>
-                  <Layout />
-                </ProtectedRoute>
-              }
-            >
-              <Route index element={<Home />} />
-              <Route path=":roomId" element={<ChatRoom />} />
-            </Route>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/choose" element={<ChoosePage />} />
-            <Route path="/profile" element={<Profile />} />
-          </Routes>
-        </RoomProvider>
-      </AuthProvider>
-    </BrowserRouter>
-  );
+	return (
+		<BrowserRouter>
+			<AuthProvider>
+				<RoomProvider>
+					<Routes>
+						<Route path="/" element={<Welcome />} />
+						<Route path="/login" element={<Login />} />
+						<Route path="/signup" element={<Signup />} />
+						<Route element={<ProtectedRoute />}>
+							<Route path="/chat" element={<Layout />}>
+								<Route index element={<Home />} />
+								<Route path=":roomId" element={<ChatRoom />} />
+							</Route>
+							<Route path="/choose" element={<ChoosePage />} />
+							<Route path="/profile" element={<Profile />} />
+						</Route>
+					</Routes>
+				</RoomProvider>
+			</AuthProvider>
+		</BrowserRouter>
+	);
 }
 
 export default App;

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useRoom } from "../hooks/useRoom";
+import { useAuth } from "../hooks/useAuth";
 
 export const SideBar = () => {
   return (
@@ -67,17 +68,12 @@ export const SideBar = () => {
 
 const List = () => {
   const location = useLocation();
-  const { rooms, userRole } = useRoom();
-  const accessibleRooms = Object.values(rooms).filter(
-    (room) =>
-      room.allowedRoles.includes(userRole) ||
-      userRole === "faculty" ||
-      userRole === "alumni"
-  );
+  const { rooms } = useRoom();
+  const allRooms = Object.values(rooms);
   const noti = 1;
   return (
     <ul>
-      {accessibleRooms.map((room) => {
+      {allRooms.map((room) => {
         const isActive = location.pathname === `/chat/${room.id}`;
         return (
           <li key={room.id}>

@@ -1,13 +1,13 @@
 import { useAuth } from "../hooks/useAuth";
-import { Navigate } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
 
-export const ProtectedRoute = ({ children }) => {
-  const { token, loading } = useAuth();
-  if (loading) return <div>Loading...</div>;
+export const ProtectedRoute = () => {
+	const { user, loading } = useAuth();
+	if (loading) return <div>Loading...</div>;
 
-  if (!token) {
-    console.log("not logged in", token);
-    return <Navigate to={"/login"} />;
-  }
-  return children;
+	return !user || Object.keys(user).length !== 0 ? (
+		<Outlet />
+	) : (
+		<Navigate to={"/login"} />
+	);
 };

@@ -5,7 +5,7 @@ export const RoomContext = createContext();
 
 export const RoomProvider = ({ children }) => {
   const [rooms, setRooms] = useState({});
-  const { userRole } = useAuth();
+  const { role } = useAuth();
 
   useEffect(() => {
     const roomData = {
@@ -35,12 +35,17 @@ export const RoomProvider = ({ children }) => {
         allowedRoles: ["alumni", "faculty"],
       },
       faculty: { id: "faculty", name: "Faculty", allowedRoles: ["faculty"] },
+      general: {
+        id: "general",
+        name: "General",
+        allowedRoles: ["fy", "sy", "ty", "by", "alumni", "faculty"],
+      },
     };
     setRooms(roomData);
   }, []);
 
   return (
-    <RoomContext.Provider value={{ rooms, userRole }}>
+    <RoomContext.Provider value={{ rooms, role }}>
       {children}
     </RoomContext.Provider>
   );

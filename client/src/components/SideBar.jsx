@@ -99,10 +99,12 @@ const List = () => {
 const SettingsBtn = ({ name }) => {
   const location = useLocation();
   const isActive = location.pathname.startsWith(`/${name}`);
+  const { user } = useAuth();
+  const id = user._id;
   return (
     <li>
       <Link
-        to={`/${name.toLowerCase()}`}
+        to={`/${name.toLowerCase()}?id=${id}`}
         className={`flex justify-start items-center p-2 text-gray-900 border border-gray-500/50 rounded-lg ${
           isActive ? "bg-gray-100" : ""
         } dark:hover:bg-gray-100 group`}

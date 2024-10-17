@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, Navigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { EditProfile } from "./EditProfile";
-import { getUser } from "../utils/user";
-import { useAuth } from "../hooks/useAuth";
+import { getUser } from "../../utils/user";
+import { useAuth } from "../../hooks/useAuth";
 
 export const Profile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -95,7 +95,7 @@ export const Profile = () => {
         </p>
       </div>
 
-      {isModalOpen && <EditProfile closeModal={closeModal} />}
+      {isModalOpen && <EditProfile closeModal={closeModal} user={user} />}
     </div>
   );
 };

@@ -1,4 +1,20 @@
-export const EditProfile = ({ closeModal }) => {
+import { useState } from "react";
+import DescriptionEditor from "./Editor";
+
+export const EditProfile = ({ closeModal, user }) => {
+  const [newName, setNewName] = useState(user.username);
+  const [description, setDescription] = useState("");
+  const [github, setGithub] = useState("https://github.com/");
+  const [linkedin, setLinkedIn] = useState("https://linkedin.com/in/");
+  const [twitter, setTwitter] = useState("https://x.com/");
+  const [other, setOther] = useState("https://");
+
+  const updateProfile = (e) => {
+    e.preventDefault();
+    console.log(newName, description, github, linkedin, twitter, other);
+    closeModal();
+  };
+
   return (
     <div
       id="crud-modal"
@@ -6,16 +22,16 @@ export const EditProfile = ({ closeModal }) => {
       aria-hidden="true"
       className="fixed inset-0 flex items-center justify-center z-50"
     >
-      <div className="relative p-4 w-full max-w-2xl max-h-full">
-        <div className="relative bg-gray-50 rounded-lg shadow border">
-          <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+      <div className="relative p-4 w-full max-w-3xl max-h-[80vh] overflow-auto">
+        <div className="relative bg-gray-50 rounded-lg shadow-lg border-2">
+          <div className="flex items-center justify-between p-2 md:p-4 border-b rounded-t dark:border-gray-600">
             <h3 className="text-lg font-semibold text-gray-900">
               Edit Profile
             </h3>
             <button
               type="button"
               onClick={closeModal} // Close modal on click
-              className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-500 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              className="text-gray-900 bg-transparent hover:bg-red-500 hover:text-gray-300 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:text-white"
             >
               <svg
                 className="w-3 h-3"
@@ -45,6 +61,8 @@ export const EditProfile = ({ closeModal }) => {
                   Name
                 </label>
                 <input
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
                   type="text"
                   name="name"
                   id="name"
@@ -60,6 +78,8 @@ export const EditProfile = ({ closeModal }) => {
                   Github
                 </label>
                 <input
+                  value={github}
+                  onChange={(e) => setGithub(e.target.value)}
                   type="url"
                   name="name"
                   id="name"
@@ -75,6 +95,8 @@ export const EditProfile = ({ closeModal }) => {
                   Linkedin
                 </label>
                 <input
+                  value={linkedin}
+                  onChange={(e) => setLinkedIn(e.target.value)}
                   type="url"
                   name="name"
                   id="name"
@@ -90,6 +112,8 @@ export const EditProfile = ({ closeModal }) => {
                   Twitter
                 </label>
                 <input
+                  value={twitter}
+                  onChange={(e) => setTwitter(e.target.value)}
                   type="url"
                   name="name"
                   id="name"
@@ -105,7 +129,9 @@ export const EditProfile = ({ closeModal }) => {
                   Other
                 </label>
                 <input
-                  type="url"
+                  value={other}
+                  onChange={(e) => setOther(e.target.value)}
+                  type="text"
                   name="name"
                   id="name"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-500 dark:placeholder-gray-400  dark:focus:ring-primary-500 dark:focus:border-primary-500"
@@ -117,36 +143,20 @@ export const EditProfile = ({ closeModal }) => {
                   htmlFor="description"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
-                  Description{" "}
-                  <span className="text-gray-900/50 text-xs">
-                    (Markdown Supported)
-                  </span>
+                  Description
                 </label>
-                <textarea
-                  id="description"
-                  rows="4"
-                  className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-500 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Write product description here"
-                ></textarea>
+                <DescriptionEditor
+                  defaultContent={description}
+                  onChange={setDescription}
+                />
               </div>
             </div>
             <button
+              onClick={updateProfile}
               type="submit"
               className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
-              <svg
-                className="me-1 -ms-1 w-5 h-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-              Add new product
+              Update Profile
             </button>
           </form>
         </div>

@@ -11,7 +11,7 @@ export default function Login() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setpasswordError] = useState("");
   const [loginError, setLoginError] = useState("");
-  const { role, saveUserInfo } = useAuth();
+  const { saveUserInfo } = useAuth();
   const navigate = useNavigate();
 
   const handleEmailLogin = async (e) => {
@@ -30,13 +30,13 @@ export default function Login() {
       });
 
       if (success) {
-        saveUserInfo(data);
-        console.log("role:", role);
-        if (!role.trim() || role === "NO_ROLE") {
-          navigate("/choose");
-        } else {
-          navigate("/");
-        }
+        saveUserInfo(data, (role) => {
+          if (!role || role === "NO_ROLE") {
+            navigate("/choose");
+          } else {
+            navigate("/");
+          }
+        });
       } else {
         setLoginError(message);
       }
@@ -61,14 +61,15 @@ export default function Login() {
     };
 
     const { message, data, success } = signInWithGoogle(reqBody);
-    if (success) {
-      saveUserInfo(data);
 
-      if (role !== "NO_ROLE") {
-        navigate("/");
-      } else {
-        navigate("/choose");
-      }
+    if (success) {
+      saveUserInfo(data, (newRole) => {
+        if (!newRole || newRole === "NO_ROLE") {
+          navigate("/choose");
+        } else {
+          navigate("/");
+        }
+      });
     } else {
       setLoginError(message);
     }

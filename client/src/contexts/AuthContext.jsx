@@ -36,11 +36,18 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const saveUserInfo = async (user) => {
+  const saveUserInfo = async (user, callback) => {
     localStorage.setItem("user", JSON.stringify(user));
     setUser(user);
-    const res = await axios.get(`/api/users/role/${user._id}`);
-    setRole(res.data.data); // Set the role once fetched
+    try {
+      const res = await axios.get(`/api/users/role/${user._id}`);
+      const fetchedRole = res.data.data;
+      setRole(fetchedRole);
+      if (callback) callback(fetchedRole);
+    } catch (error) {
+      console.error("Error fetching role:", error);
+      if (callback) callback(null);
+    }
   };
 
   const logout = () => {

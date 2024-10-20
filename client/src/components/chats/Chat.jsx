@@ -12,7 +12,7 @@ export const Chat = ({ roomId }) => {
   const chatEndRef = useRef(null);
 
   useEffect(() => {
-    socketRef.current = io("https://https://peerpod-hk5e.onrender.com", {
+    socketRef.current = io("https://peerpod-hk5e.onrender.com", {
       withCredentials: true,
     });
     socketRef.current.emit("joinRoom", roomId.toUpperCase());

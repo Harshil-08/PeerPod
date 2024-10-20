@@ -22,7 +22,12 @@ const __dirname = path.resolve();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors("*"));
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://peer-pod.firebaseapp.com"],
+    credentials: true,
+  }),
+);
 app.use(cookieParser());
 
 app.use("/api", rootRouter);

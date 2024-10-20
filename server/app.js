@@ -2,6 +2,8 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import http from "http";
+import { handleWebsocket } from "./websocket.js";
 import "dotenv/config";
 
 import { auth } from "./middlewares/auth.js";
@@ -13,6 +15,7 @@ const PORT = process.env.PORT;
 const DB_URI = process.env.DB_URI;
 
 const app = express();
+const server = http.createServer(app);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -23,13 +26,15 @@ app.use("/api", rootRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/users", auth, userRouter);
 
-app.listen(PORT, () => {
-  try {
-    mongoose.connect(DB_URI);
-    console.log("Database connected successfully!");
-  } catch (error) {
-    console.log(`Error connecting to server: ${error.message}`);
-  }
+handleWebsocket(server);
 
-  console.log(`Server listening on port ${PORT}`);
+server.listen(PORT, () => {
+	try {
+		mongoose.connect(DB_URI);
+		console.log("Database connected successfully!");
+	} catch (error) {
+		console.log(`Error connecting to server: ${error.message}`);
+	}
+
+	console.log(`Server listening on port ${PORT}`);
 });

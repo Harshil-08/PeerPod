@@ -5,7 +5,11 @@ import { authSocket } from "./middlewares/authSocket.js";
 export const handleWebsocket = (httpServer) => {
 	const io = new Server(httpServer, {
 		cors: {
-			origin: "http://localhost:5173",
+			origin: [
+				"http://localhost:5173",
+				"http://localhost:5174",
+				"http://127.0.0.1:8080",
+			],
 			credentials: true,
 		},
 	});
@@ -31,9 +35,14 @@ export const handleWebsocket = (httpServer) => {
 					mentions,
 				});
 
-				console.log(message);
+				const messageWithUser = await Message.findById({
+					_id: message._id,
+				}).populate({
+					path: "sender",
+					select: "profilePicture username",
+				});
 
-				io.to(channelType).emit("newMessage", message);
+				io.to(channelType).emit("newMessage", messageWithUser);
 			} catch (error) {
 				console.log("Error saving message:", error.message);
 			}
@@ -41,7 +50,10 @@ export const handleWebsocket = (httpServer) => {
 
 		socket.on("fetchMessages", async (room) => {
 			try {
-				const messages = await Message.find({ channelType: room });
+				const messages = await Message.find({ channelType: room }).populate({
+					path: "sender",
+					select: "profilePicture username",
+				});
 				socket.emit("messages", messages);
 			} catch (error) {
 				console.error("Error fetching messages:", error);

@@ -1,5 +1,5 @@
 import Picker from "emoji-picker-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -8,28 +8,35 @@ export const Chat = ({ roomId }) => {
 	const [allMessages, setAllMessages] = useState([]);
 	const [newMessage, setNewMessage] = useState("");
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-	const socket = io("http://localhost:3000", { withCredentials: true });
+	const socketRef = useRef(null);
+	const chatEndRef = useRef(null);
 
 	useEffect(() => {
-		socket.emit("joinRoom", roomId);
-		socket.emit("fetchMessages", roomId);
+		socketRef.current = io("http://localhost:3000", { withCredentials: true });
+		socketRef.current.emit("joinRoom", roomId.toUpperCase());
+		socketRef.current.emit("fetchMessages", roomId.toUpperCase());
 
-		socket.on("newMessage", (message) => {
+		socketRef.current.on("newMessage", (message) => {
 			console.log("Received new message:", message);
 			setAllMessages((prevMessages) => [...prevMessages, message]);
 		});
 
-		socket.on("messages", (messages) => {
+		socketRef.current.on("messages", (messages) => {
 			console.log("Fetched messages:", messages);
 			setAllMessages(messages);
 		});
 
 		return () => {
-			socket.off("newMessage", handleMessage);
-			socket.off("messages");
-			socket.disconnect();
+			socketRef.current.off("newMessage");
+			socketRef.current.off("messages");
+			socketRef.current.disconnect();
 		};
 	}, [roomId]);
+
+	// Scroll to the bottom whenever allMessages changes
+	useEffect(() => {
+		chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	}, [allMessages]);
 
 	const handleMessageSend = () => {
 		if (newMessage.trim()) {
@@ -38,9 +45,10 @@ export const Chat = ({ roomId }) => {
 				contentType: "TEXT",
 				channelType: roomId.toUpperCase(),
 				sender: user._id,
+				createdAt: new Date(),
 			};
 			console.log("Sending message:", message);
-			socket.emit("sendMessage", message);
+			socketRef.current.emit("sendMessage", message);
 			setNewMessage("");
 			setShowEmojiPicker(false);
 		}
@@ -62,6 +70,7 @@ export const Chat = ({ roomId }) => {
 										<MessageLeft key={i} message={m} />
 									))}
 								</div>
+								<div ref={chatEndRef} /> {/* Empty div to scroll into view */}
 							</div>
 						</div>
 						<div className="flex flex-row items-center h-16 drop-shadow-lg rounded-xl bg-white w-full px-2">
@@ -150,14 +159,24 @@ export const Chat = ({ roomId }) => {
 const MessageLeft = ({ message }) => {
 	return (
 		<div className="col-start-1 col-end-8 p-3 rounded-lg relative">
-			<div className="flex flex-row">
-				<div className="flex items-center mt-2 justify-center h-8 w-8 rounded-full bg-indigo-500 text-gray-50 flex-shrink-0">
-					{message.sender[0]}{" "}
+			<div className="flex flex-row items-center">
+				<div className="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500 text-gray-50 flex-shrink-0">
+					<img src={message.sender.profilePicture} />
 				</div>
-				<div className="relative ml-2 text-sm bg-white py-3 px-3 shadow rounded-xl">
-					<div className="flex gap-3 items-baseline">
-						<div>{message.content}</div>
-						<span className="text-[0.7rem] text-gray-900/60">1:30 AM</span>
+				<div className="flex flex-col items-start justify-start">
+					<span className="text-sm text-violet-500 ml-2">
+						{message.sender.username}
+					</span>
+					<div className="relative ml-2 text-sm bg-white py-3 px-3 shadow rounded-xl">
+						<div className="flex gap-3 items-baseline">
+							<div>{message.content}</div>
+							<span className="text-[0.7rem] text-gray-900/60">
+								{new Date(message.createdAt).toLocaleTimeString([], {
+									hour: "2-digit",
+									minute: "2-digit",
+								})}
+							</span>
+						</div>
 					</div>
 				</div>
 			</div>

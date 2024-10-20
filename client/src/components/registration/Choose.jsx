@@ -25,7 +25,7 @@ export const ChoosePage = () => {
       });
       saveUserInfo(res.data);
       setRoleError("");
-      navigate("/chat");
+      navigate(`/chat/${role}`);
     }
   };
 

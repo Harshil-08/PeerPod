@@ -5,54 +5,56 @@ import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 
 export const SideBar = () => {
-	const [IsOpen, setIsOpen] = useState(false);
-	const toggleDrawer = () => {
-		setIsOpen(!IsOpen);
-	};
-	const { roomId } = useParams();
-	const roomName = roomId.replace("/chat/", "");
-	return (
-		<>
-			<nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200">
-				<div className="px-3 py-3 lg:px-5 lg:pl-3">
-					<div className="flex items-center justify-between">
-						<div className="flex items-center justify-start rtl:justify-end">
-							<button
-								onClick={toggleDrawer}
-								data-drawer-target="logo-sidebar"
-								data-drawer-toggle="logo-sidebar"
-								aria-controls="logo-sidebar"
-								type="button"
-								className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-							>
-								<svg
-									className="w-6 h-6"
-									aria-hidden="true"
-									fill="currentColor"
-									viewBox="0 0 20 20"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path
-										clipRule="evenodd"
-										fillRule="evenodd"
-										d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
-									></path>
-								</svg>
-							</button>
-							<Link to="/chat" className="flex ms-2 md:me-24">
-								<img
-									src="https://flowbite.com/docs/images/logo.svg"
-									className="h-8 me-3"
-									alt="PeerPod Logo"
-								/>
-								<span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap">
-									PeerPod • {roomName}
-								</span>
-							</Link>
-						</div>
-					</div>
-				</div>
-			</nav>
+  const [IsOpen, setIsOpen] = useState(false);
+  const toggleDrawer = () => {
+    setIsOpen(!IsOpen);
+  };
+
+  const { roomId } = useParams();
+  let roomName = roomId !== undefined ? roomId.replace("/chat/", "") : "Home";
+
+  return (
+    <>
+      <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200">
+        <div className="px-3 py-3 lg:px-5 lg:pl-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center justify-start rtl:justify-end">
+              <button
+                onClick={toggleDrawer}
+                data-drawer-target="logo-sidebar"
+                data-drawer-toggle="logo-sidebar"
+                aria-controls="logo-sidebar"
+                type="button"
+                className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+              >
+                <svg
+                  className="w-6 h-6"
+                  aria-hidden="true"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    clipRule="evenodd"
+                    fillRule="evenodd"
+                    d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
+                  ></path>
+                </svg>
+              </button>
+              <Link to="/chat" className="flex ms-2 md:me-24">
+                <img
+                  src="https://flowbite.com/docs/images/logo.svg"
+                  className="h-8 me-3"
+                  alt="PeerPod Logo"
+                />
+                <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap">
+                  PeerPod • {roomName}
+                </span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
 
 			<aside
 				id="logo-sidebar"
@@ -130,15 +132,16 @@ const SettingsBtn = ({ name }) => {
 };
 
 const LogOutButton = () => {
-	const { logout } = useAuth();
-	return (
-		<li>
-			<button
-				onClick={logout}
-				className={`flex w-full justify-start items-center p-2 border border-gray-500/50 rounded-lg bg-red-600 text-white group`}
-			>
-				<img className="w-6 h-6 rounded-full" src="logout.svg" alt="logout" />
-			</button>
-		</li>
-	);
+  const { logout } = useAuth();
+  return (
+    <li>
+      <button
+        onClick={logout}
+        className={`flex w-full justify-start items-center p-2 border border-gray-500/50 rounded-lg bg-red-600 text-white group`}
+      >
+        <img className="w-6 h-6 rounded-full" src="logout.svg" alt="" />
+        <span className="ms-3">Log Out</span>
+      </button>
+    </li>
+  );
 };

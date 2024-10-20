@@ -118,9 +118,8 @@ export const Chat = ({ roomId }) => {
 							<div className="ml-4">
 								<button
 									onClick={handleMessageSend}
-									className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white md:px-2 md:py-1 flex-shrink-0"
+									className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white md:py-1 md:pr-2 sm:ml-4 flex-shrink-0"
 								>
-									<span className="hidden md:block">Send</span>
 									<span className="p-3 md:p-2">
 										<svg
 											className="w-4 h-4 transform rotate-45"
@@ -137,7 +136,7 @@ export const Chat = ({ roomId }) => {
 											></path>
 										</svg>
 									</span>
-									<span>Send</span>
+									<span className="hidden md:block">Send</span>
 								</button>
 							</div>
 						</div>

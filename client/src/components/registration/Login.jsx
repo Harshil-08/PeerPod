@@ -60,7 +60,7 @@ export default function Login() {
       profilePicture: res.user.photoURL,
     };
 
-    const { message, data, success } = signInWithGoogle(reqBody);
+    const { message, data, success } = await signInWithGoogle(reqBody);
 
     if (success) {
       saveUserInfo(data, (newRole) => {

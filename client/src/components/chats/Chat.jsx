@@ -12,7 +12,7 @@ export const Chat = ({ roomId }) => {
   const chatEndRef = useRef(null);
 
   useEffect(() => {
-    socketRef.current = io("https://peerpod-hk5e.onrender.com", {
+    socketRef.current = io("http://localhost:3000", {
       withCredentials: true,
     });
     socketRef.current.emit("joinRoom", roomId.toUpperCase());
@@ -187,11 +187,42 @@ export const Chat = ({ roomId }) => {
 };
 
 const MessageLeft = ({ message }) => {
+  const convertUrlsToLinks = (text) => {
+    const urlRegex =
+      /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
+    return text.split(urlRegex).map((part, index) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a
+            key={index}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline"
+          >
+            {part}
+          </a>
+        );
+      }
+      return part;
+    });
+  };
+
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <div className="col-start-1 col-end-8 p-3 rounded-lg relative">
+    <div
+      className="col-start-1 col-end-8 p-3 rounded-lg relative"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div className="flex flex-row items-center">
         <div className="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500 text-gray-50 flex-shrink-0">
-          <img src={message.sender.profilePicture} />
+          <img
+            src={message.sender.profilePicture}
+            alt={message.sender.username}
+            className="h-8 w-8 rounded-full"
+          />
         </div>
         <div className="flex flex-col items-start justify-start">
           <span className="text-sm text-violet-500 ml-2">
@@ -199,7 +230,7 @@ const MessageLeft = ({ message }) => {
           </span>
           <div className="relative ml-2 text-sm bg-white py-3 px-3 shadow rounded-xl">
             <div className="flex gap-3 items-baseline">
-              <div>{message.content}</div>
+              <div>{convertUrlsToLinks(message.content)}</div>
               <span className="text-[0.7rem] text-gray-900/60">
                 {new Date(message.createdAt).toLocaleTimeString([], {
                   hour: "2-digit",
@@ -209,7 +240,61 @@ const MessageLeft = ({ message }) => {
             </div>
           </div>
         </div>
+        {isHovered && <ThreeDots />}
       </div>
     </div>
+  );
+};
+
+const ThreeDots = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+  return (
+    <div>
+      <button
+        onClick={toggleDropdown}
+        id="dropdownMenuIconButton"
+        data-dropdown-toggle="dropdownDots"
+        data-dropdown-placement="bottom-start"
+        className="flex-shrink-0 inline-flex self-center items-center mt-4 text-sm font-medium text-center text-gray-900 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50"
+        type="button"
+      >
+        <svg
+          className="w-4 h-4 text-gray-500 dark:text-gray-400 hover:text-gray-700"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          viewBox="0 0 4 15"
+        >
+          <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+        </svg>
+      </button>
+      {isOpen && (
+        <div className="right-0 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-40">
+          <ul className="text-sm text-gray-700 dark:text-gray-200">
+            <List name={"reply"} href={"#reply"} />
+            <List name={"edit"} href={"#edit"} />
+            <List name={"delete"} href={"#delete"} />
+            <List name={"profile"} href={"#profile"} />
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const List = ({ name, href }) => {
+  return (
+    <li>
+      <a
+        href={href}
+        className="block px-4 py-2 hover:bg-gray-100 text-gray-900"
+      >
+        {name}
+      </a>
+    </li>
   );
 };

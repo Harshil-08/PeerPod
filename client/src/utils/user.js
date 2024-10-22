@@ -21,3 +21,12 @@ export const getUser = async (id) => {
     console.log("error fetching user", error);
   }
 };
+
+export const updateUser = async (id, updatedProfile) => {
+  try {
+    const res = await axios.post(`/api/users/${id}`, updatedProfile);
+    return res.data.data;
+  } catch (error) {
+    console.log("error updating profile", error);
+  }
+};

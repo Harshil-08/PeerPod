@@ -3,12 +3,14 @@ import { Link, useLocation } from "react-router-dom";
 import { EditProfile } from "./EditProfile";
 import { getUser } from "../../utils/user";
 import { useAuth } from "../../hooks/useAuth";
+import { useTheme } from "../../contexts/ThemeContext";
 
 export const Profile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [localUser, setLocalUser] = useState({});
   const location = useLocation();
   const { user, logout } = useAuth();
+  const {theme , toggleTheme} = useTheme();
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -34,8 +36,8 @@ export const Profile = () => {
   }, [id]);
 
   return (
-    <div className="mx-2 my-2 grid text-black">
-      <div className="flex flex-col md:flex-row rounded-lg border border-gray-400/20 bg-white shadow-md p-6">
+    <div className={`${theme && "dark"} mx-2 my-2 grid text-black dark:bg-neutral-900 dark:text-white`}>
+      <div className="flex flex-col md:flex-row rounded-lg border border-gray-400/20 bg-white shadow-md p-6 dark:bg-neutral-900">
         <div className="relative">
           <img
             width={120}
@@ -78,7 +80,7 @@ export const Profile = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 mt-3 max-h-screen rounded-md p-5 bg-gray-100 border border-black border-dashed">
+      <div className="flex flex-col gap-4 mt-3 max-h-screen rounded-md p-5 bg-gray-100 border border-black border-dashed dark:bg-neutral-900">
         <h1 className="text-xl font-bold mb-2">Description</h1>
         <p className="text-justify">
           Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit ipsum

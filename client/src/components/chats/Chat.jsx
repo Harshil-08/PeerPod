@@ -2,6 +2,7 @@ import Picker from "emoji-picker-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { io } from "socket.io-client";
 import { useAuth } from "../../hooks/useAuth";
+import { useTheme } from "../../contexts/ThemeContext";
 
 export const Chat = ({ roomId }) => {
   const { user } = useAuth();
@@ -10,9 +11,10 @@ export const Chat = ({ roomId }) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const socketRef = useRef(null);
   const chatEndRef = useRef(null);
+  const {theme , toogleTheme} = useTheme();
 
   useEffect(() => {
-    socketRef.current = io("https://peerpod-hk5e.onrender.com", {
+    socketRef.current = io("http://localhost:3000", {
       withCredentials: true,
     });
     socketRef.current.emit("joinRoom", roomId.toUpperCase());
@@ -89,10 +91,10 @@ export const Chat = ({ roomId }) => {
   }, []);
 
   return (
-    <div className="flex flex-col overflow-hidden h-screen  text-gray-800">
+    <div className={` ${theme && "dark"} flex flex-col overflow-hidden h-screen dark:bg-neutral-900 dark:text-white  text-gray-800`}>
       <div className="flex flex-row h-full w-full overflow-x-hidden">
         <div className="flex flex-col flex-auto h-[95%]">
-          <div className="flex flex-col flex-auto flex-shrink-0 rounded-xl bg-gray-100 h-full p-4">
+          <div className="flex flex-col flex-auto flex-shrink-0 rounded-xl bg-gray-100 h-full p-4 dark:bg-neutral-900">
             <div className="flex flex-col h-full overflow-x-auto mb-4">
               <div className="flex flex-col h-full">
                 <div className="grid  -ml-2">
@@ -103,7 +105,7 @@ export const Chat = ({ roomId }) => {
                 <div ref={chatEndRef} /> {/* Empty div to scroll into view */}
               </div>
             </div>
-            <div className="flex flex-row items-center h-16 drop-shadow-lg rounded-xl bg-white w-full px-2">
+            <div className="flex flex-row items-center h-16 drop-shadow-lg rounded-xl bg-white dark:bg-neutral-900 w-full px-2">
               <div className="flex-grow">
                 <div className="relative w-full">
                   <input
@@ -116,11 +118,11 @@ export const Chat = ({ roomId }) => {
                     }}
                     placeholder="type something..."
                     type="text"
-                    className="flex w-full border border-gray-400/50 rounded-xl focus:outline-none focus:border-indigo-500 pl-4 md:pr-10 pr-6 h-10"
+                    className="flex w-full border border-gray-400/50 rounded-xl dark:bg-neutral-900 focus:outline-none focus:border-indigo-500 pl-4 md:pr-10 pr-6 h-10"
                   />
                   <button
                     onClick={toggleEmojiPicker}
-                    className="emoji-button absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600"
+                    className="emoji-button absolute flex items-center justify-center h-full w-12 right-0 top-0 dark:text-neutral-900 hover:text-gray-600 dark:hover:text-gray-600"
                   >
                     <svg
                       className="w-6 h-6"
@@ -186,21 +188,21 @@ export const Chat = ({ roomId }) => {
   );
 };
 
-const MessageLeft = ({ message }) => {
+const MessageLeft = ({ message,theme }) => {
   return (
-    <div className="col-start-1 col-end-8 p-3 rounded-lg relative">
+    <div className={`col-start-1 col-end-8 p-3 rounded-lg relative ${theme && "dark"}`}>
       <div className="flex flex-row items-center">
         <div className="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500 text-gray-50 flex-shrink-0">
           <img src={message.sender.profilePicture} />
         </div>
         <div className="flex flex-col items-start justify-start">
-          <span className="text-sm text-violet-500 ml-2">
+          <span className="text-sm text-violet-500 ml-2 dark:text-indigo-300">
             {message.sender.username}
           </span>
-          <div className="relative ml-2 text-sm bg-white py-3 px-3 shadow rounded-xl">
+          <div className="relative ml-2 text-sm bg-white py-3 px-3 shadow rounded-xl dark:bg-neutral-800">
             <div className="flex gap-3 items-baseline">
               <div>{message.content}</div>
-              <span className="text-[0.7rem] text-gray-900/60">
+              <span className="text-[0.7rem] text-gray-900/60 dark:text-gray-400">
                 {new Date(message.createdAt).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",

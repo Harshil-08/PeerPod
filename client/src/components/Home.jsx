@@ -4,7 +4,7 @@ export default function Home() {
 	const { user, role, loading, logout } = useAuth();
 
 	return (
-		<div className="flex flex-col gap-10 p-12">
+		<div className="flex flex-col gap-10 p-12 dark:text-white dark:bg-neutral-900 h-screen">
 			{!loading && (
 				<h1 className="mb-4 text-3xl font-extrabold leading-none tracking-tight md:text-3xl xl:text-5xl">
 					Hello {user.username} from {role}!!!
@@ -15,7 +15,7 @@ export default function Home() {
 				chatting.
 			</p>
 			<button
-				className="bg-red-400 hover:bg-red-500 p-2 w-fit rounded-md"
+				className="bg-red-500 hover:bg-red-600 p-2 text-white w-fit rounded-md"
 				onClick={logout}
 			>
 				Log out

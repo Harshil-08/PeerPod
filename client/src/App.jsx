@@ -4,6 +4,7 @@ import Login from "./components/registration/Login.jsx";
 import Signup from "./components/registration/Signup.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
 import { ProtectedRoute } from "./components/ProtectedRoute.jsx";
+import { ThemeProvider } from "./contexts/ThemeContext.jsx";
 import { ChoosePage } from "./components/registration/Choose.jsx";
 import { Layout } from "./components/Layout.jsx";
 import { Welcome } from "./components/Welcome.jsx";
@@ -16,19 +17,21 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <RoomProvider>
-          <Routes>
-            <Route path="/" element={<Welcome />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="/chat" element={<Layout />}>
-                <Route index element={<Home />} />
-                <Route path=":roomId" element={<ChatRoom />} />
-              </Route>
-              <Route path="/choose" element={<ChoosePage />} />
-              <Route path="/profile" element={<Profile />} />
-            </Route>
-          </Routes>
+					<ThemeProvider>
+           <Routes>
+             <Route path="/" element={<Welcome />} />
+             <Route path="/login" element={<Login />} />
+             <Route path="/signup" element={<Signup />} />
+             <Route element={<ProtectedRoute />}>
+               <Route path="/chat" element={<Layout />}>
+                 <Route index element={<Home />} />
+                 <Route path=":roomId" element={<ChatRoom />} />
+               </Route>
+               <Route path="/choose" element={<ChoosePage />} />
+               <Route path="/profile" element={<Profile />} />
+             </Route>
+           </Routes>
+					</ThemeProvider>
         </RoomProvider>
       </AuthProvider>
     </BrowserRouter>

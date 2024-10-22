@@ -14,7 +14,7 @@ export const Chat = ({ roomId }) => {
   const {theme , toogleTheme} = useTheme();
 
   useEffect(() => {
-    socketRef.current = io("http://localhost:3000", {
+    socketRef.current = io("https://peerpod-hk5e.onrender.com", {
       withCredentials: true,
     });
     socketRef.current.emit("joinRoom", roomId.toUpperCase());

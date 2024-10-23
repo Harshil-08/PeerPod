@@ -5,6 +5,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from "../../contexts/ThemeContext";
 
 export const Chat = ({ roomId }) => {
+  const mode = import.meta.env.VITE_MODE;
   const { user } = useAuth();
   const { theme } = useTheme();
   const [allMessages, setAllMessages] = useState([]);
@@ -270,9 +271,9 @@ const MessageLeft = ({ message, allMessages, onReply }) => {
             onClick={() => handleOriginalMessageClick(originalMessage._id)}
           >
             {originalMessage && message.replyTo && (
-              <div className="flex bg-zinc-100 dark:bg-zinc-700 p-1 rounded gap-2 mb-2 cursor-pointer">
+              <div className="flex flex-col bg-zinc-100 dark:bg-zinc-700 p-1 rounded mb-2 cursor-pointer">
                 <p className="text-violet-500">
-                  {originalMessage.sender.username}:{" "}
+                  {originalMessage.sender.username}
                 </p>
                 <p className="text-ellipsis overflow-hidden whitespace-nowrap max-w-xs">
                   {originalMessage.content}

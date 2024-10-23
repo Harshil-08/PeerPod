@@ -9,6 +9,7 @@ export const Chat = ({ roomId }) => {
   const { theme } = useTheme();
   const [allMessages, setAllMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const replyRef = useRef(null);
   const [replyTo, setReplyTo] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const socketRef = useRef(null);
@@ -40,12 +41,13 @@ export const Chat = ({ roomId }) => {
 
   // Scroll to the bottom whenever allMessages changes
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    chatEndRef.current?.scrollIntoView({ behavior: "instant" });
 
     window.addEventListener("click", handleOutsideClick);
     window.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         setShowEmojiPicker(false);
+        setReplyTo(null);
       }
     });
     return () => {
@@ -58,8 +60,9 @@ export const Chat = ({ roomId }) => {
     };
   }, [allMessages]);
 
-  const handleReply = (message) => {
-    setReplyTo(message.sender._id);
+  const handleReply = (sender) => {
+    setReplyTo(sender);
+    replyRef.current?.focus();
   };
 
   const handleMessageSend = () => {
@@ -69,7 +72,7 @@ export const Chat = ({ roomId }) => {
         contentType: "TEXT",
         channelType: roomId.toUpperCase(),
         sender: user._id,
-        replyTo: replyTo ? replyTo._id : null,
+        replyTo: replyTo._id,
         createdAt: new Date(),
       };
       console.log("Sending message:", message);
@@ -108,16 +111,27 @@ export const Chat = ({ roomId }) => {
               <div className="flex flex-col h-full">
                 <div className="grid  -ml-2">
                   {allMessages.map((m, i) => (
-                    <MessageLeft key={i} message={m} onReply={handleReply} />
+                    <MessageLeft
+                      key={i}
+                      message={m}
+                      allMessages={allMessages}
+                      onReply={handleReply}
+                    />
                   ))}
                 </div>
                 <div ref={chatEndRef} /> {/* Empty div to scroll into view */}
               </div>
             </div>
+            {replyTo?.sender.username && (
+              <p className="text-violet-500 font-bold ml-2">
+                Replying to: @{replyTo?.sender.username}
+              </p>
+            )}
             <div className="flex flex-row items-center h-16 drop-shadow-lg rounded-xl bg-white dark:bg-neutral-900 w-full px-2">
               <div className="flex-grow">
                 <div className="relative w-full">
                   <input
+                    ref={replyRef}
                     value={newMessage}
                     onChange={handleMessage}
                     onKeyDown={(e) => {
@@ -197,7 +211,7 @@ export const Chat = ({ roomId }) => {
   );
 };
 
-const MessageLeft = ({ message, onReply }) => {
+const MessageLeft = ({ message, allMessages, onReply }) => {
   const convertUrlsToLinks = (text) => {
     const urlRegex =
       /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
@@ -220,8 +234,15 @@ const MessageLeft = ({ message, onReply }) => {
   };
 
   const { theme } = useTheme();
-
   const [isHovered, setIsHovered] = useState(false);
+  const originalMessage = allMessages.find((m) => m._id === message.replyTo);
+
+  const handleOriginalMessageClick = (messageId) => {
+    const messageElement = document.getElementById(`message-${messageId}`);
+    if (messageElement) {
+      messageElement.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
 
   return (
     <div
@@ -237,12 +258,28 @@ const MessageLeft = ({ message, onReply }) => {
             className="h-8 w-8 rounded-full"
           />
         </div>
-        <div className="flex flex-col items-start justify-start">
+        <div
+          className="flex flex-col items-start justify-start"
+          id={`message-${message._id}`}
+        >
           <span className="text-sm text-violet-500 ml-2 dark:text-indigo-300">
             {message.sender.username}
           </span>
-          <div className="relative ml-2 text-sm bg-white py-3 px-3 shadow rounded-xl dark:bg-neutral-800">
-            <div className="flex gap-3 items-baseline">
+          <div
+            className="relative ml-2 text-sm bg-white py-3 px-3 shadow rounded-xl dark:bg-neutral-800"
+            onClick={() => handleOriginalMessageClick(originalMessage._id)}
+          >
+            {originalMessage && message.replyTo && (
+              <div className="flex bg-zinc-100 dark:bg-zinc-700 p-1 rounded gap-2 mb-2 cursor-pointer">
+                <p className="text-violet-500">
+                  {originalMessage.sender.username}:{" "}
+                </p>
+                <p className="text-ellipsis overflow-hidden whitespace-nowrap max-w-xs">
+                  {originalMessage.content}
+                </p>
+              </div>
+            )}
+            <div className="flex gap-3 items-baseline justify-between">
               <div>{convertUrlsToLinks(message.content)}</div>
               <span className="text-[0.7rem] text-gray-900/60 dark:text-gray-400">
                 {new Date(message.createdAt).toLocaleTimeString([], {
@@ -251,34 +288,26 @@ const MessageLeft = ({ message, onReply }) => {
                 })}
               </span>
             </div>
-            <button
-              onClick={() => onReply(message)}
-              className="text-xs text-gray-500"
-            >
-              Reply
-            </button>
           </div>
         </div>
-        {isHovered && <ThreeDots />}
+        {isHovered && <ThreeDots onReply={() => onReply(message)} />}
       </div>
     </div>
   );
 };
 
-const ThreeDots = () => {
+const ThreeDots = ({ onReply }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+
   return (
-    <div>
+    <div className="flex">
       <button
         onClick={toggleDropdown}
-        id="dropdownMenuIconButton"
-        data-dropdown-toggle="dropdownDots"
-        data-dropdown-placement="bottom-start"
-        className="flex-shrink-0 inline-flex self-center items-center mt-4 text-sm font-medium text-center text-gray-900 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50"
+        className="relative flex-shrink-0 inline-flex self-center items-center mt-4 text-sm font-medium text-center text-gray-900 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50"
         type="button"
       >
         <svg
@@ -292,28 +321,23 @@ const ThreeDots = () => {
         </svg>
       </button>
       {isOpen && (
-        <div className="right-0 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-40">
-          <ul className="text-sm text-gray-700 dark:text-gray-200">
-            <List name={"reply"} href={"#reply"} />
-            <List name={"edit"} href={"#edit"} />
-            <List name={"delete"} href={"#delete"} />
-            <List name={"profile"} href={"#profile"} />
-          </ul>
+        <div className="ml-4 absolute mx-auto z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-40">
+          <div className="text-sm text-gray-700 dark:text-gray-200">
+            <button
+              className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900"
+              onClick={onReply}
+            >
+              Reply
+            </button>
+            <button className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900">
+              Edit
+            </button>
+            <button className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900">
+              Delete
+            </button>
+          </div>
         </div>
       )}
     </div>
-  );
-};
-
-const List = ({ name, href }) => {
-  return (
-    <li>
-      <a
-        href={href}
-        className="block px-4 py-2 hover:bg-gray-100 text-gray-900"
-      >
-        {name}
-      </a>
-    </li>
   );
 };

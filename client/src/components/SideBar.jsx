@@ -157,11 +157,8 @@ const LogOutButton = () => {
         onClick={logout}
         className="flex w-full items-center p-2 text-white bg-red-600 rounded-lg hover:bg-red-700 group"
       >
-        <img
-          className="w-6 h-6 rounded-full"
-          src="logout.svg"
-          alt="Logout"
-        />
+        <img className="w-6 h-6 rounded-full" src="logout.svg" alt="Logout" />
+        <span className="ml-4">Logout</span>
       </button>
     </li>
   );

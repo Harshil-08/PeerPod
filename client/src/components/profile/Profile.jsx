@@ -11,7 +11,7 @@ export const Profile = () => {
   const [links, setLinks] = useState({});
   const location = useLocation();
   const { user, logout } = useAuth();
-  const {theme , toggleTheme} = useTheme();
+  const { theme } = useTheme();
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);

@@ -1,10 +1,12 @@
 import { useAuth } from "../hooks/useAuth";
+import { useTheme } from "../contexts/ThemeContext";
 
 export default function Home() {
 	const { user, role, loading, logout } = useAuth();
+  const { theme } = useTheme();
 
 	return (
-		<div className="flex flex-col gap-10 p-12 dark:text-white dark:bg-neutral-900 h-screen">
+		<div className={` ${theme && "dark"} flex flex-col gap-10 p-12 dark:text-white dark:bg-neutral-900 h-screen`}>
 			{!loading && (
 				<h1 className="mb-4 text-3xl font-extrabold leading-none tracking-tight md:text-3xl xl:text-5xl">
 					Hello {user.username} from {role}!!!

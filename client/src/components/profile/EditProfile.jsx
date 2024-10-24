@@ -2,17 +2,20 @@ import { useEffect, useState } from "react";
 import DescriptionEditor from "./Editor";
 import { updateUser } from "../../utils/user";
 import { useAuth } from "../../hooks/useAuth";
+import { useTheme } from "../../contexts/ThemeContext";
 
 export const EditProfile = ({ closeModal, user, links }) => {
   const [newName, setNewName] = useState(user.username);
   const [description, setDescription] = useState(user?.description);
-
+  
   const [github, setGithub] = useState(links?.github || "");
   const [linkedin, setLinkedIn] = useState(links?.linkedin || "");
   const [twitter, setTwitter] = useState(links?.twitter || "");
 
   const [otherLinks, setOtherLinks] = useState([]);
   const { saveUserInfo } = useAuth();
+
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (links?.other && Array.isArray(links.other)) {
@@ -64,17 +67,17 @@ export const EditProfile = ({ closeModal, user, links }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
+    <div className={`${theme && "dark"} fixed inset-0 flex items-center justify-center z-50`}>
       <div className="relative p-4 w-full max-w-3xl max-h-[80vh] overflow-auto">
-        <div className="relative bg-gray-50 rounded-lg shadow-lg border-2">
+        <div className="relative bg-gray-50 rounded-lg shadow-lg border-2 dark:border-slate-400 dark:bg-neutral-900">
           <div className="flex items-center justify-between p-4 border-b">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Edit Profile
             </h3>
             <button
               type="button"
               onClick={closeModal}
-              className="text-gray-900 hover:bg-red-500 hover:text-gray-300 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+              className="text-gray-900 dark:text-white hover:bg-red-500 hover:text-gray-300 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
             >
               <svg className="w-3 h-3" viewBox="0 0 14 14">
                 <path
@@ -91,14 +94,14 @@ export const EditProfile = ({ closeModal, user, links }) => {
           <form className="p-4 md:p-5">
             <div className="grid gap-4 mb-4 grid-cols-2">
               <div className="col-span-2">
-                <label className="block mb-2 text-sm font-medium text-gray-900">
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                   Name
                 </label>
                 <input
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   type="text"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 dark:bg-neutral-900 dark:text-white text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="Type name"
                 />
               </div>
@@ -109,14 +112,14 @@ export const EditProfile = ({ closeModal, user, links }) => {
                 { label: "Twitter", value: twitter, setter: setTwitter },
               ].map(({ label, value, setter }) => (
                 <div key={label} className="col-span-2 sm:col-span-1">
-                  <label className="block mb-2 text-sm font-medium text-gray-900">
+                  <label className="block mb-2 text-sm font-medium text-gray-900 dark:bg-neutral-900 dark:text-white">
                     {label}
                   </label>
                   <input
                     value={value}
                     onChange={(e) => setter(e.target.value)}
                     type="url"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 dark:bg-neutral-900 dark:text-white text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                     placeholder={`Enter ${label.toLowerCase()} URL`}
                   />
                 </div>
@@ -126,7 +129,7 @@ export const EditProfile = ({ closeModal, user, links }) => {
                 <div key={index} className="col-span-2">
                   <div className="flex gap-4">
                     <div className="flex-1">
-                      <label className="block mb-2 text-sm font-medium text-gray-900">
+                      <label className="block mb-2 text-sm font-medium text-gray-900 dark:bg-neutral-900 dark:text-white">
                         Link Name
                       </label>
                       <input
@@ -135,12 +138,12 @@ export const EditProfile = ({ closeModal, user, links }) => {
                           updateOtherLink(index, "name", e.target.value)
                         }
                         type="text"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 dark:bg-neutral-900 dark:text-white text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                         placeholder="e.g., Portfolio, Blog"
                       />
                     </div>
                     <div className="flex-[2]">
-                      <label className="block mb-2 text-sm font-medium text-gray-900">
+                      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                         URL
                       </label>
                       <div className="flex items-center gap-2">
@@ -150,7 +153,7 @@ export const EditProfile = ({ closeModal, user, links }) => {
                             updateOtherLink(index, "url", e.target.value)
                           }
                           type="url"
-                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                          className="bg-gray-50 border border-gray-300 text-gray-900 dark:bg-neutral-900 dark:text-white text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                           placeholder="Enter URL"
                         />
                         <button

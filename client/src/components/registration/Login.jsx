@@ -34,7 +34,7 @@ export default function Login() {
           if (!role || role === "NO_ROLE") {
             navigate("/choose");
           } else {
-            navigate("/");
+            navigate("/chat");
           }
         });
       } else {
@@ -67,7 +67,7 @@ export default function Login() {
         if (!newRole || newRole === "NO_ROLE") {
           navigate("/choose");
         } else {
-          navigate("/");
+          navigate("/chat");
         }
       });
     } else {

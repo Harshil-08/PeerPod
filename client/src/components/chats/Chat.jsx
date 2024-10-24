@@ -73,7 +73,7 @@ export const Chat = ({ roomId }) => {
         contentType: "TEXT",
         channelType: roomId.toUpperCase(),
         sender: user._id,
-        replyTo: replyTo._id,
+        replyTo: replyTo?._id,
         createdAt: new Date(),
       };
       console.log("Sending message:", message);

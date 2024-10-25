@@ -22,6 +22,15 @@ export const getUser = async (id) => {
   }
 };
 
+export const getUsers = async (room) => {
+  try {
+    const res = await axios.get(`/api/users/?role=${room}`);
+    return res.data.data;
+  } catch (error) {
+    console.log("error fetching users", error);
+  }
+};
+
 export const updateUser = async (id, updatedProfile) => {
   try {
     const res = await axios.post(`/api/users/${id}`, updatedProfile);

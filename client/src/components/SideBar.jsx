@@ -4,6 +4,8 @@ import { useRoom } from "../hooks/useRoom";
 import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 import { useTheme } from "../contexts/ThemeContext";
+import SunIcon from "../assets/sun.svg"
+import MoonIcon from "../assets/moon.svg"
 
 export const SideBar = () => {
   const { theme, toggleTheme } = useTheme();
@@ -58,14 +60,18 @@ export const SideBar = () => {
                   </span>
                 </Link>
               </div>
-              {/* Theme Toggle Button */}
-              <button
-                className="w-8 h-8 text-sm bg-neutral-900 dark:bg-white rounded-full text-white dark:text-black font-semibold"
-                onClick={toggleTheme}
-              >
-                {theme ? "LHT" : "DRK"}
-              </button>
-            </div>
+							{/* Theme Toggle Button */}
+							<button
+								className="w-8 h-8 flex justify-center items-center rounded-full"
+								onClick={toggleTheme}
+							>
+								{theme ? (
+									<img src={SunIcon} alt="Sun Icon" className="w-6 h-6"/>
+								) : (
+									<img src={MoonIcon} alt="Moon Icon" className="w-6 h-6"/>
+								)}
+							</button>
+						</div>
           </div>
         </nav>
 

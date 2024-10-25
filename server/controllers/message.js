@@ -58,3 +58,35 @@ export const editMessage = async (messageData) => {
 		console.error("Error editing message:", error.message);
 	}
 };
+
+export const deleteMessage = async (socket, messageId) => {
+	const io = getIo();
+
+	try {
+		const message = await Message.findById(messageId).populate("sender");
+		if (
+			message.sender._id.toString() !== socket.user.id &&
+			socket.user.role !== "FACULTY"
+		) {
+			return socket.emit("error", {
+				message: "Unauthorized to delete this message",
+			});
+		}
+
+		const deletedMessage = await Message.findByIdAndUpdate(
+			messageId,
+			{ deleted: true },
+			{ new: true },
+		).populate({
+			path: "sender",
+			select: "profilePicture username",
+		});
+
+		io.to(deletedMessage.channelType).emit(
+			"messageDeleted",
+			deletedMessage,
+		);
+	} catch (error) {
+		console.error("Error deleting message:", error.message);
+	}
+};

@@ -14,6 +14,7 @@ export const Chat = ({ roomId }) => {
   const [newMessage, setNewMessage] = useState("");
   const [replyTo, setReplyTo] = useState(null);
   const [editMessageId, setEditMessageId] = useState(null);
+  const [deleted, setDeleted] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [users, setUsers] = useState([]);
   const [mentionList, setMentionList] = useState([]);
@@ -61,16 +62,23 @@ export const Chat = ({ roomId }) => {
       );
     });
 
+    socketRef.current.on("messageDeleted", (message) => {
+      setAllMessages((prevMessages) =>
+        prevMessages.map((msg) => (msg._id === message._id ? message : msg)),
+      );
+    });
+
     return () => {
-      socketRef.current.off("newMessage");
-      socketRef.current.off("messages");
       socketRef.current.disconnect();
     };
   }, [roomId]);
 
   // Scroll to the bottom whenever allMessages changes
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "instant" });
+    if (!deleted) {
+      chatEndRef.current?.scrollIntoView({ behavior: "instant" });
+      setDeleted(false);
+    }
 
     window.addEventListener("click", handleOutsideClick);
     window.addEventListener("keydown", (e) => {
@@ -96,10 +104,16 @@ export const Chat = ({ roomId }) => {
   };
 
   const handleEdit = (message) => {
-    console.log("Editing message,", message._id);
+    console.log("Editing message", message._id);
     setEditMessageId(message._id);
     setNewMessage(message.content);
     replyRef.current?.focus();
+  };
+
+  const handleDelete = (messageId) => {
+    console.log("Deleting message", messageId);
+    setDeleted(true);
+    socketRef.current.emit("deleteMessage", messageId);
   };
 
   const closeReply = () => {
@@ -210,25 +224,32 @@ export const Chat = ({ roomId }) => {
 
   return (
     <div
-      className={` ${theme && "dark"} flex flex-col overflow-hidden h-screen dark:bg-neutral-900 dark:text-white  text-gray-800`}
+      className={` ${theme && "dark"} flex flex-col overflow-hidden h-screen dark:bg-neutral-900 dark:text-white text-gray-800`}
     >
       <div className="flex flex-row h-full w-full overflow-x-hidden">
         <div className="flex flex-col flex-auto h-[95%]">
-          <div className="flex flex-col flex-auto flex-shrink-0 rounded-xl bg-gray-100 h-full p-4 dark:bg-neutral-900 gap-2">
+          <div className="flex flex-col flex-auto flex-shrink-0 mt-8 rounded-xl bg-gray-100 h-full p-4 dark:bg-neutral-900 gap-2">
             <div className="flex flex-col h-full overflow-x-auto mb-4">
               <div className="flex flex-col h-full">
-                <div className="grid  -ml-2">
-                  {allMessages.map((m, i) => (
-                    <MessageLeft
-                      key={i}
-                      message={m}
-                      allMessages={allMessages}
-                      onReply={handleReply}
-                      onEdit={handleEdit}
-                      users={users}
-                    />
-                  ))}
-                </div>
+                {allMessages.length > 0 ? (
+                  <div className="grid  -ml-2">
+                    {allMessages.map((m, i) => (
+                      <MessageLeft
+                        key={i}
+                        message={m}
+                        allMessages={allMessages}
+                        onReply={handleReply}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                        users={users}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <span className="mx-auto my-auto text-4xl text-black font-bold">
+                    Not much to see in here!
+                  </span>
+                )}
                 <div ref={chatEndRef} /> {/* Empty div to scroll into view */}
               </div>
             </div>
@@ -362,7 +383,14 @@ export const Chat = ({ roomId }) => {
   );
 };
 
-const MessageLeft = ({ message, allMessages, onReply, onEdit, users }) => {
+const MessageLeft = ({
+  message,
+  allMessages,
+  onReply,
+  onEdit,
+  onDelete,
+  users,
+}) => {
   const navigate = useNavigate();
 
   const convertTextToLinksAndMentions = (text, users) => {
@@ -426,7 +454,7 @@ const MessageLeft = ({ message, allMessages, onReply, onEdit, users }) => {
 
   const previousMessage = allMessages[allMessages.indexOf(message) - 1];
   const showSenderInfo =
-    previousMessage && previousMessage.sender._id !== message.sender._id;
+    !previousMessage || previousMessage.sender._id !== message.sender._id;
 
   return (
     <div
@@ -454,12 +482,12 @@ const MessageLeft = ({ message, allMessages, onReply, onEdit, users }) => {
             </span>
           )}
           <div
-            className="relative ml-2 text-sm bg-white py-3 px-3 shadow rounded-xl dark:bg-neutral-800"
+            className={`relative ml-2 text-sm py-3 px-3 ${!message.deleted ? "shadow bg-white" : "bg-[#F3F4F6]"} rounded-xl dark:bg-neutral-800`}
             onClick={() =>
               message.replyTo && handleOriginalMessageClick(originalMessage._id)
             }
           >
-            {originalMessage && message.replyTo && (
+            {originalMessage && message.replyTo && !message.deleted && (
               <div className="flex flex-col bg-zinc-100 dark:bg-zinc-700 p-1 rounded mb-2 cursor-pointer">
                 <p className="text-violet-500">
                   {originalMessage.sender.username}
@@ -470,7 +498,14 @@ const MessageLeft = ({ message, allMessages, onReply, onEdit, users }) => {
               </div>
             )}
             <div className="flex gap-3 items-baseline justify-between">
-              <div>{convertTextToLinksAndMentions(message.content, users)}</div>
+              <div>
+                {convertTextToLinksAndMentions(
+                  message.deleted
+                    ? "This message was deleted."
+                    : message.content,
+                  users,
+                )}
+              </div>
               <span className="text-[0.7rem] text-gray-900/60 dark:text-gray-400">
                 {new Date(message.createdAt).toLocaleTimeString([], {
                   hour: "2-digit",
@@ -480,13 +515,15 @@ const MessageLeft = ({ message, allMessages, onReply, onEdit, users }) => {
             </div>
           </div>
         </div>
-        {isHovered && (
+        {isHovered && !message.deleted && (
           <ThreeDots
+            message={message}
             onReply={() => onReply(message)}
             onEdit={() => onEdit(message)}
+            onDelete={() => onDelete(message._id)}
           />
         )}
-        {message.updatedAt !== message.createdAt && (
+        {message.updatedAt !== message.createdAt && !message.deleted && (
           <span className="text-xs text-gray-500 ml-1 mb-1 self-end dark:text-indigo-300">
             Edited
           </span>
@@ -496,8 +533,9 @@ const MessageLeft = ({ message, allMessages, onReply, onEdit, users }) => {
   );
 };
 
-const ThreeDots = ({ onReply, onEdit }) => {
+const ThreeDots = ({ message, onReply, onEdit, onDelete }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, role } = useAuth();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -535,9 +573,14 @@ const ThreeDots = ({ onReply, onEdit }) => {
             >
               Edit
             </button>
-            <button className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900 dark:text-white dark:hover:bg-neutral-700">
-              Delete
-            </button>
+            {(user._id === message.sender._id || role === "FACULTY") && (
+              <button
+                className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900 dark:text-white dark:hover:bg-neutral-700"
+                onClick={onDelete}
+              >
+                Delete
+              </button>
+            )}
           </div>
         </div>
       )}

@@ -5,6 +5,7 @@ import {
 	editMessage,
 	fetchMessages,
 	sendMessage,
+	deleteMessage,
 } from "./controllers/message.js";
 
 let io;
@@ -28,6 +29,7 @@ export const handleWebsocket = (httpServer) => {
 		socket.on("fetchMessages", (room) => fetchMessages(socket, room));
 		socket.on("sendMessage", (messageData) => sendMessage(socket, messageData));
 		socket.on("editMessage", (messageData) => editMessage(messageData));
+		socket.on("deleteMessage", (messageId) => deleteMessage(socket, messageId));
 	});
 };
 

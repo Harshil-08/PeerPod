@@ -38,3 +38,23 @@ export const fetchMessages = async (socket, room) => {
 		console.error("Error fetching messages:", error.message);
 	}
 };
+
+export const editMessage = async (messageData) => {
+	const io = getIo();
+	const { id, content } = messageData;
+
+	try {
+		const updatedMessage = await Message.findByIdAndUpdate(
+			{ _id: id },
+			{ content },
+			{ new: true },
+		).populate({
+			path: "sender",
+			select: "profilePicture username",
+		});
+
+		io.to(updatedMessage.channelType).emit("messageEdited", updatedMessage);
+	} catch (error) {
+		console.error("Error editing message:", error.message);
+	}
+};

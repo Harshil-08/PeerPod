@@ -62,61 +62,60 @@ export const Profile = () => {
   };
 
   return (
-    <div className={`${theme && "dark"} mx-2 my-2 grid text-black dark:bg-neutral-900 dark:text-white`}>
-      <div className="flex flex-col md:flex-row rounded-lg border border-gray-400/20 bg-white shadow-md p-6 dark:bg-neutral-900">
-        <div className="relative">
-          <img
-            width={120}
-            className="object-cover"
-            src={localUser.profilePicture}
-            alt="User"
-          />
-        </div>
+    <div
+      className={`${
+        theme && "dark"
+      } p-4 grid md:grid-cols-4 gap-2 text-black dark:bg-neutral-900 dark:text-white`}
+    >
+      <div className="flex flex-col items-center h-fit rounded-lg border border-gray-200/90 dark:border-gray-400/20 bg-white shadow-md py-4 dark:bg-neutral-800">
+        <img
+          width={100}
+          className="object-cover"
+          src={localUser.profilePicture}
+          alt="User"
+        />
 
-        <div className="flex flex-col md:px-6 md:w-3/4">
-          <div className="flex h-8 flex-row">
-            <h2 className="text-xl font-semibold">{localUser.username}</h2>
-          </div>
+        <h2 className="text-md font-semibold my-2">{localUser.username}</h2>
 
-          <div className="mt-2 flex flex-wrap md:flex-row md:items-center gap-2">
-            {hasAnyLinks() ? (
-              <>
-                {renderSocialLinks()}
-                {renderOtherLinks()}
-              </>
-            ) : (
-              <p className="text-xs text-gray-600">
-                {id === user._id
-                  ? "Edit your profile to add social links"
-                  : "No social links available"}
-              </p>
-            )}
-          </div>
-
-          {id === user._id && (
-            <div className="flex gap-2 mt-2">
-              <button
-                onClick={openModal}
-                className="flex w-fit gap-2 items-center justify-end rounded-lg bg-blue-500 text-sm p-2 text-white transition-all duration-150 ease-in-out hover:bg-blue-600"
-              >
-                <img width={20} src="edit.svg" alt="edit" />
-              </button>
-              <button
-                onClick={logout}
-                className="flex w-fit gap-2 items-center justify-end rounded-lg bg-red-500 text-sm p-2 text-white transition-all duration-150 ease-in-out hover:bg-red-600"
-              >
-                <img width={20} src="logout.svg" alt="logout" />
-              </button>
-            </div>
+        <div className="mt-2 flex flex-wrap md:flex-row md:items-center gap-2">
+          {hasAnyLinks() ? (
+            <>
+              {renderSocialLinks()}
+              {renderOtherLinks()}
+            </>
+          ) : (
+            <p className="text-xs text-gray-600">
+              {id === user._id
+                ? "Edit your profile to add social links"
+                : "No social links available"}
+            </p>
           )}
         </div>
+        {id === user._id && (
+          <div className="flex gap-2 mt-6">
+            <button
+              onClick={openModal}
+              className="flex gap-2 items-center justify-end rounded-lg bg-blue-500 text-sm p-2 text-white transition-all duration-150 ease-in-out hover:bg-blue-600"
+            >
+              <img width={20} src="edit.svg" alt="edit" /> Edit
+            </button>
+            <button
+              onClick={logout}
+              className="flex gap-2 items-center justify-end rounded-lg bg-red-500 text-sm p-2 text-white transition-all duration-150 ease-in-out hover:bg-red-600"
+            >
+              <img width={20} src="logout.svg" alt="logout" /> Logout
+            </button>
+          </div>
+        )}
       </div>
 
-      <div className="flex flex-col gap-4 mt-3 max-h-screen rounded-md p-5 bg-gray-100 border border-black border-dashed dark:bg-neutral-900">
+      <div className="md:col-span-3 overflow-y-auto max-h-[45rem] flex flex-col gap-4 rounded-md p-5 bg-gray-100 border border-black/20 dark:border-gray-400 border-dashed dark:bg-neutral-800">
         <h1 className="text-xl font-bold mb-2">Description</h1>
-        <p className="text-justify">
-          {localUser?.description ?? "Nothing to see here..."}
-        </p>
+        <p
+          dangerouslySetInnerHTML={{
+            __html: localUser?.description || "Nothing to see here...",
+          }}
+        ></p>
       </div>
 
       {isModalOpen && (
@@ -161,7 +160,7 @@ const Social = ({ name, url }) => {
         <button
           className={`${config.bgColor} text-xs px-3 py-1.5 font-semibold ${config.textColor} inline-flex items-center space-x-2 rounded-full shadow`}
         >
-          <img width={20} src={config.icon} alt="" />
+          <img width={15} src={config.icon} alt="" />
           <span>{name}</span>
         </button>
       </a>

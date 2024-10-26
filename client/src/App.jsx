@@ -27,8 +27,10 @@ function App() {
                  <Route index element={<Home />} />
                  <Route path=":roomId" element={<ChatRoom />} />
                </Route>
-               <Route path="/choose" element={<ChoosePage />} />
+               <Route path="/" element={<Layout/>} >
                <Route path="/profile" element={<Profile />} />
+               </Route>
+               <Route path="/choose" element={<ChoosePage />} />
              </Route>
            </Routes>
 					</ThemeProvider>

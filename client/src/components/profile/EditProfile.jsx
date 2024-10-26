@@ -7,7 +7,7 @@ import { useTheme } from "../../contexts/ThemeContext";
 export const EditProfile = ({ closeModal, user, links }) => {
   const [newName, setNewName] = useState(user.username);
   const [description, setDescription] = useState(user?.description);
-  
+
   const [github, setGithub] = useState(links?.github || "");
   const [linkedin, setLinkedIn] = useState(links?.linkedin || "");
   const [twitter, setTwitter] = useState(links?.twitter || "");
@@ -33,7 +33,9 @@ export const EditProfile = ({ closeModal, user, links }) => {
       ...(linkedin && { linkedin }),
       ...(twitter && { twitter }),
     };
-    const validOtherLinks = otherLinks.filter((link) => link.url.trim() !== "");
+    const validOtherLinks = otherLinks.filter(
+      (link) => link.length && link.url.trim() !== ""
+    );
 
     const updatedLinks = {
       ...socialLinks,
@@ -67,7 +69,11 @@ export const EditProfile = ({ closeModal, user, links }) => {
   };
 
   return (
-    <div className={`${theme && "dark"} fixed inset-0 flex items-center justify-center z-50`}>
+    <div
+      className={`${
+        theme && "dark"
+      } fixed inset-0 flex items-center justify-center z-50`}
+    >
       <div className="relative p-4 w-full max-w-3xl max-h-[80vh] overflow-auto">
         <div className="relative bg-gray-50 rounded-lg shadow-lg border-2 dark:border-slate-400 dark:bg-neutral-900">
           <div className="flex items-center justify-between p-4 border-b">
@@ -207,9 +213,8 @@ export const EditProfile = ({ closeModal, user, links }) => {
                 </div>
               )}
 
-              {/* Description Editor */}
-              <div className="col-span-2">
-                <label className="block mb-2 text-sm font-medium text-gray-900">
+              <div className="col-span-2 border">
+                <label className="mb-2 text-sm font-medium text-gray-900">
                   Description
                 </label>
                 <DescriptionEditor

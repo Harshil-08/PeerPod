@@ -107,7 +107,6 @@ const List = () => {
   const location = useLocation();
   const { rooms } = useRoom();
   const allRooms = Object.values(rooms);
-  const noti = 1;
   return (
     <ul>
       {allRooms.map((room) => {
@@ -121,9 +120,6 @@ const List = () => {
               } hover:bg-gray-100 dark:hover:bg-neutral-800 group`}
             >
               <span className="ms-3">{room.name}</span>
-              <div className="flex items-center justify-center ml-auto text-xs text-white bg-red-500 h-4 w-4 rounded leading-none">
-                {noti}
-              </div>
             </Link>
           </li>
         );

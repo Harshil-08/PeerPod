@@ -8,7 +8,7 @@ export const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState({});
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const { role, loading } = useAuth();
+  const { role } = useAuth();
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -33,9 +33,6 @@ export const AdminDashboard = () => {
     console.log(user);
   };
 
-  if (loading) {
-    return <>Loading...</>;
-  }
 
   if (role !== "FACULTY") {
     return (

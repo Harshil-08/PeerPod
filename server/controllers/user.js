@@ -4,7 +4,7 @@ export const getUsers = async (req, res) => {
 	const { role } = req.query;
 
 	try {
-		if (!role) {
+		if (!role || role === "GENERAL") {
 			const users = await User.find({});
 			return res.status(200).json({
 				message: "Users fetched successfully",

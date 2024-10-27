@@ -571,12 +571,14 @@ const ThreeDots = ({ message, onReply, onEdit, onDelete }) => {
 						>
 							Reply
 						</button>
-						<button
-							className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900 dark:text-white dark:hover:bg-neutral-700"
-							onClick={onEdit}
-						>
-							Edit
-						</button>
+						{(user._id === message.sender._id || role === "FACULTY") && (
+							<button
+								className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900 dark:text-white dark:hover:bg-neutral-700"
+								onClick={onEdit}
+							>
+								Edit
+							</button>
+						)}
 						{(user._id === message.sender._id || role === "FACULTY") && (
 							<button
 								className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900 dark:text-white dark:hover:bg-neutral-700"

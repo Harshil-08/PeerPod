@@ -1,5 +1,6 @@
 import { useAuth } from "../hooks/useAuth";
 import { useTheme } from "../contexts/ThemeContext";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   const { user, role, loading, logout } = useAuth();
@@ -7,7 +8,9 @@ export default function Home() {
 
   return (
     <div
-      className={` ${theme && "dark"} flex flex-col gap-10 p-12 dark:text-white dark:bg-neutral-900 h-screen`}
+      className={` ${
+        theme && "dark"
+      } flex flex-col gap-10 p-12 dark:text-white dark:bg-neutral-900 h-screen`}
     >
       {!loading && (
         <h1 className="mb-4 text-3xl font-extrabold leading-none tracking-tight md:text-3xl xl:text-5xl">
@@ -26,12 +29,23 @@ export default function Home() {
           remove users if required.
         </p>
       )}
-      <button
-        className="bg-red-500 hover:bg-red-600 p-2 text-white w-fit rounded-md"
-        onClick={logout}
-      >
-        Log out
-      </button>
+      <div className="flex gap-2">
+        <button
+          className="bg-red-500 hover:bg-red-600 p-2 text-white w-fit rounded-md"
+          onClick={logout}
+        >
+          Log out
+        </button>
+        {role === "FACULTY" && (
+          <Link
+            to={"/admin"}
+            className="bg-blue-500 hover:bg-blue-600 p-2 text-white w-fit rounded-md"
+            onClick={logout}
+          >
+            Admin Dashboard
+          </Link>
+        )}
+      </div>
     </div>
   );
 }

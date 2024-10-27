@@ -5,11 +5,19 @@ export const updateUserRole = async (id, role) => {
     const user = await axios.post(`/api/users/${id}`, role, {
       withCredentials: true,
     });
-    console.log(user.data);
-
-    return user.data;
+    return {
+      message: user.data.message,
+      data: user.data.data,
+      success: user.data.success,
+    };
   } catch (error) {
     console.log("error updating role", error);
+    return {
+      message:
+        error.response?.data?.message ||
+        "Failed to update role! Please try again.",
+      success: false,
+    };
   }
 };
 
@@ -34,8 +42,36 @@ export const getUsers = async (room) => {
 export const updateUser = async (id, updatedProfile) => {
   try {
     const res = await axios.post(`/api/users/${id}`, updatedProfile);
-    return res.data.data;
+    console.log(res.data);
+    return {
+      message: "Profile updated Successfully!",
+      data: res.data.data,
+      success: res.data.success,
+    };
   } catch (error) {
     console.log("error updating profile", error);
+    return {
+      message:
+        error.response?.data?.message || "Update Failed! Please try again.",
+      success: false,
+    };
+  }
+};
+export const deleteUser = async (id) => {
+  try {
+    const res = await axios.delete(`/api/users/`, id);
+    console.log(res.data);
+    return {
+      message: "Profile deleted Successfully!",
+      data: res.data.data,
+      success: res.data.success,
+    };
+  } catch (error) {
+    console.log("error updating profile", error);
+    return {
+      message:
+        error.response?.data?.message || "Update Failed! Please try again.",
+      success: false,
+    };
   }
 };

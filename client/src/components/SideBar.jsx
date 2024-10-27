@@ -4,8 +4,8 @@ import { useRoom } from "../hooks/useRoom";
 import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 import { useTheme } from "../contexts/ThemeContext";
-import SunIcon from "../assets/sun.svg"
-import MoonIcon from "../assets/moon.svg"
+import SunIcon from "../assets/sun.svg";
+import MoonIcon from "../assets/moon.svg";
 
 export const SideBar = () => {
   const { theme, toggleTheme } = useTheme();
@@ -60,18 +60,19 @@ export const SideBar = () => {
                   </span>
                 </Link>
               </div>
-							{/* Theme Toggle Button */}
-							<button
-								className="w-8 h-8 flex justify-center items-center rounded-full"
-								onClick={toggleTheme}
-							>
-								{theme ? (
-									<img src={SunIcon} alt="Sun Icon" className="w-6 h-6"/>
-								) : (
-									<img src={MoonIcon} alt="Moon Icon" className="w-6 h-6"/>
-								)}
-							</button>
-						</div>
+              <div className="flex gap-2 items-center justify-between">
+                <button
+                  className="w-8 h-8 flex justify-center items-center rounded-full"
+                  onClick={toggleTheme}
+                >
+                  {theme ? (
+                    <img src={SunIcon} alt="Sun Icon" className="w-6 h-6" />
+                  ) : (
+                    <img src={MoonIcon} alt="Moon Icon" className="w-6 h-6" />
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
         </nav>
 
@@ -146,7 +147,7 @@ const SettingsBtn = ({ name }) => {
       >
         <img
           className="w-8 h-8 rounded-full"
-          src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+          src={user.profilePicture}
           alt="user photo"
         />
         <span className="ms-3">{name}</span>
@@ -163,7 +164,7 @@ const LogOutButton = () => {
         onClick={logout}
         className="flex w-full items-center p-2 text-white bg-red-600 rounded-lg hover:bg-red-700 group"
       >
-        <img className="w-6 h-6 rounded-full" src="logout.svg" alt="Logout" />
+        <img className="w-6 h-6 rounded-full" src="logout.svg" alt="" />
         <span className="ml-4">Logout</span>
       </button>
     </li>

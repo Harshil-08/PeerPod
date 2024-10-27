@@ -4,13 +4,13 @@ import { GoogleAuthProvider, signInWithPopup, getAuth } from "@firebase/auth";
 import { app } from "../../utils/firebase";
 import { signIn, signInWithGoogle } from "../../utils/authentication";
 import { useAuth } from "../../hooks/useAuth";
+import { toaster } from "../../hooks/useToast";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setpasswordError] = useState("");
-  const [loginError, setLoginError] = useState("");
   const { saveUserInfo } = useAuth();
   const navigate = useNavigate();
 
@@ -30,6 +30,9 @@ export default function Login() {
       });
 
       if (success) {
+        toaster.success({
+          message: message,
+        });
         saveUserInfo(data, (role) => {
           if (!role || role === "NO_ROLE") {
             navigate("/choose");
@@ -38,7 +41,9 @@ export default function Login() {
           }
         });
       } else {
-        setLoginError(message);
+        toaster.error({
+          message: message,
+        });
       }
 
       setEmail("");
@@ -63,6 +68,9 @@ export default function Login() {
     const { message, data, success } = await signInWithGoogle(reqBody);
 
     if (success) {
+      toaster.success({
+        message: message,
+      });
       saveUserInfo(data, (newRole) => {
         if (!newRole || newRole === "NO_ROLE") {
           navigate("/choose");
@@ -71,7 +79,9 @@ export default function Login() {
         }
       });
     } else {
-      setLoginError(message);
+      toaster.error({
+        message: message,
+      });
     }
 
     setEmail("");
@@ -154,9 +164,6 @@ export default function Login() {
               >
                 Sign In
               </button>
-              {loginError && (
-                <p className="text-xs mt-1 text-red-600">{loginError}</p>
-              )}
             </div>
           </form>
           <div className="mt-4 text-sm text-gray-600 text-center">

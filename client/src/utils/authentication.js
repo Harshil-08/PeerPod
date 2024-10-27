@@ -28,6 +28,11 @@ export const signIn = async (credentials) => {
     };
   } catch (error) {
     console.log("Error logging in with Email: ", error);
+    return {
+      message:
+        error.response?.data?.message || "Sign-up failed. Please try again.",
+      success: false,
+    };
   }
 };
 
@@ -41,5 +46,10 @@ export const signInWithGoogle = async (credentials) => {
     };
   } catch (error) {
     console.log("Error with google login: ", error);
+    return {
+      message:
+        error.response?.data?.message || "Sign-up failed. Please try again.",
+      success: false,
+    };
   }
 };

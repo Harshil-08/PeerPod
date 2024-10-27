@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { signUp } from "../../utils/authentication";
+import { signInWithGoogle, signUp } from "../../utils/authentication";
+import { app } from "../../utils/firebase";
 import { useNavigate } from "react-router-dom";
+import { toaster } from "../../hooks/useToast";
+import { GoogleAuthProvider, signInWithPopup, getAuth } from "@firebase/auth";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Signup() {
   const [username, setUsername] = useState("");
@@ -10,6 +14,7 @@ export default function Signup() {
   const [usernameError, setUsernameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setpasswordError] = useState("");
+  const { saveUserInfo } = useAuth();
   const navigate = useNavigate();
 
   const handleEmailSignup = async (e) => {
@@ -35,15 +40,57 @@ export default function Signup() {
       });
 
       if (success) {
+        toaster.success({
+          message: message,
+        });
         navigate("/login");
       } else {
-        alert(message);
+        toaster.error({
+          message: message,
+        });
       }
 
       setUsernameError("");
       setEmailError("");
       setpasswordError("");
     }
+  };
+
+  const handleGoogleSignin = async () => {
+    const provider = new GoogleAuthProvider();
+    const auth = getAuth(app);
+
+    const res = await signInWithPopup(auth, provider);
+    const reqBody = {
+      name: res.user.displayName,
+      email: res.user.email,
+      profilePicture: res.user.photoURL,
+    };
+
+    const { message, data, success } = await signInWithGoogle(reqBody);
+
+    if (success) {
+      toaster.success({
+        message: message,
+      });
+      saveUserInfo(data, (newRole) => {
+        if (!newRole || newRole === "NO_ROLE") {
+          navigate("/choose");
+        } else {
+          navigate("/chat");
+        }
+      });
+    } else {
+      setLoginError(message);
+      toaster.error({
+        message: message,
+      });
+    }
+
+    setEmail("");
+    setPassword("");
+    setEmailError("");
+    setpasswordError("");
   };
 
   return (
@@ -65,6 +112,7 @@ export default function Signup() {
           <div className="">
             <div className="w-full mb-2 lg:mb-0">
               <button
+                onClick={handleGoogleSignin}
                 type="button"
                 className="w-full flex justify-center items-center gap-2 bg-white text-sm text-gray-600 p-2 rounded-md hover:bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors duration-300"
               >

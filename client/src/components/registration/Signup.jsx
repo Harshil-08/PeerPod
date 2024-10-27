@@ -70,6 +70,9 @@ export default function Signup() {
     const { message, data, success } = await signInWithGoogle(reqBody);
 
     if (success) {
+      toaster.success({
+        message: message,
+      });
       saveUserInfo(data, (newRole) => {
         if (!newRole || newRole === "NO_ROLE") {
           navigate("/choose");
@@ -79,6 +82,9 @@ export default function Signup() {
       });
     } else {
       setLoginError(message);
+      toaster.error({
+        message: message,
+      });
     }
 
     setEmail("");

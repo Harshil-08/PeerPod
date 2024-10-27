@@ -3,6 +3,7 @@ import DescriptionEditor from "./Editor";
 import { updateUser } from "../../utils/user";
 import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from "../../contexts/ThemeContext";
+import { toaster } from "../../hooks/useToast";
 
 export const EditProfile = ({ closeModal, user, links }) => {
   const [newName, setNewName] = useState(user.username);
@@ -42,14 +43,24 @@ export const EditProfile = ({ closeModal, user, links }) => {
       other: validOtherLinks,
     };
 
-    const updatedUser = await updateUser(user._id, {
-      username: newName,
-      description,
-      links: updatedLinks,
-    });
-
-    saveUserInfo(updatedUser);
-    closeModal();
+    try {
+      const { message, data, success } = await updateUser(user._id, {
+        username: newName,
+        description,
+        links: updatedLinks,
+      });
+      if (success) {
+        toaster.success({
+          message: message,
+        });
+        saveUserInfo(data);
+        closeModal();
+      }
+    } catch (error) {
+      toaster.error({
+        message: message,
+      });
+    }
   };
 
   const addOtherLink = () => {

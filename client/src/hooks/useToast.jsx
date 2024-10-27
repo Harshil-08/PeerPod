@@ -1,25 +1,25 @@
 import toast, { Toaster } from "react-hot-toast";
 
 export const toaster = {
-  success: ({ message, duration = 4000, position = "top-center" }) =>
+  success: ({ message, duration = 4000, position = "bottom-center" }) =>
     toast.success(message, {
       duration,
       position,
     }),
 
-  error: ({ message, duration = 5000, position = "top-center" }) =>
+  error: ({ message, duration = 5000, position = "bottom-center" }) =>
     toast.error(message, {
       duration,
       position,
     }),
 
-  loading: ({ message, duration, position = "top-center" }) =>
+  loading: ({ message, duration, position = "bottom-center" }) =>
     toast.loading(message, {
       duration,
       position,
     }),
 
-  custom: ({ message, duration = 4000, position = "top-center", icon }) =>
+  custom: ({ message, duration = 4000, position = "bottom-center", icon }) =>
     toast(message, {
       duration,
       position,

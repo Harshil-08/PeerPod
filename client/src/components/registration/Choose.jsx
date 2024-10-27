@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { updateUserRole } from "../../utils/user";
+import { toaster } from "../../hooks/useToast";
 
 export const ChoosePage = () => {
   const ROLES = ["fy", "sy", "ty", "by", "alumni"];
@@ -20,12 +21,23 @@ export const ChoosePage = () => {
       setRoleError("Please select a role to continue!");
       return;
     } else {
-      const res = await updateUserRole(user._id, {
-        role: role.toUpperCase(),
-      });
-      saveUserInfo(res.data);
-      setRoleError("");
-      navigate(`/chat/${role}`);
+      try {
+        const { message, data, success } = await updateUserRole(user._id, {
+          role: role.toUpperCase(),
+        });
+        if (success) {
+          toaster.success({
+            message: message,
+          });
+          saveUserInfo(data);
+          setRoleError("");
+          navigate(`/chat/${role}`);
+        }
+      } catch (error) {
+        toaster.error({
+          message: message,
+        });
+      }
     }
   };
 

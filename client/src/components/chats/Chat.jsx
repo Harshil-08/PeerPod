@@ -5,6 +5,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from "../../contexts/ThemeContext";
 import { getUsers } from "../../utils/user";
 import { useNavigate } from "react-router-dom";
+import { toaster } from "../../hooks/useToast";
 
 export const Chat = ({ roomId }) => {
 	const mode = import.meta.env.VITE_MODE;
@@ -76,8 +77,9 @@ export const Chat = ({ roomId }) => {
 	// Scroll to the bottom whenever allMessages changes
 	useEffect(() => {
 		if (!deleted) {
-			chatEndRef.current?.scrollIntoView({ behavior: "instant" });
-			setDeleted(false);
+			setTimeout(() => {
+					chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+			}, 100);
 		}
 
 		window.addEventListener("click", handleOutsideClick);
@@ -113,6 +115,9 @@ export const Chat = ({ roomId }) => {
 	const handleDelete = (messageId) => {
 		console.log("Deleting message", messageId);
 		setDeleted(true);
+		toaster.success({
+			message: "Message Deleted!"
+		})
 		socketRef.current.emit("deleteMessage", messageId);
 	};
 
@@ -146,6 +151,10 @@ export const Chat = ({ roomId }) => {
 			setShowEmojiPicker(false);
 			setReplyTo(null);
 			setMention(false);
+
+			setTimeout(() => {
+				chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+			}, 100);
 		}
 	};
 

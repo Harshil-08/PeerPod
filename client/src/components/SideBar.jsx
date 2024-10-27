@@ -6,7 +6,6 @@ import { useState } from "react";
 import { useTheme } from "../contexts/ThemeContext";
 import SunIcon from "../assets/sun.svg";
 import MoonIcon from "../assets/moon.svg";
-import { Notification } from "./chats/Notification";
 
 export const SideBar = () => {
   const { theme, toggleTheme } = useTheme();
@@ -62,7 +61,6 @@ export const SideBar = () => {
                 </Link>
               </div>
               <div className="flex gap-2 items-center justify-between">
-                <Notification />
                 <button
                   className="w-8 h-8 flex justify-center items-center rounded-full"
                   onClick={toggleTheme}

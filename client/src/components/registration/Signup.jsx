@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { signUp } from "../../utils/authentication";
 import { useNavigate } from "react-router-dom";
+import { toaster } from "../../hooks/useToast";
 
 export default function Signup() {
   const [username, setUsername] = useState("");
@@ -35,9 +36,14 @@ export default function Signup() {
       });
 
       if (success) {
+        toaster.success({
+          message: message,
+        });
         navigate("/login");
       } else {
-        alert(message);
+        toaster.error({
+          message: message,
+        });
       }
 
       setUsernameError("");

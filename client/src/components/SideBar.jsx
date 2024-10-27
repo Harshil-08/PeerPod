@@ -147,7 +147,7 @@ const SettingsBtn = ({ name }) => {
       >
         <img
           className="w-8 h-8 rounded-full"
-          src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+          src={user.profilePicture}
           alt="user photo"
         />
         <span className="ms-3">{name}</span>

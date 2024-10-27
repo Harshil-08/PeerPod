@@ -57,3 +57,21 @@ export const updateUser = async (id, updatedProfile) => {
     };
   }
 };
+export const deleteUser = async (id) => {
+  try {
+    const res = await axios.delete(`/api/users/`, id);
+    console.log(res.data);
+    return {
+      message: "Profile deleted Successfully!",
+      data: res.data.data,
+      success: res.data.success,
+    };
+  } catch (error) {
+    console.log("error updating profile", error);
+    return {
+      message:
+        error.response?.data?.message || "Update Failed! Please try again.",
+      success: false,
+    };
+  }
+};

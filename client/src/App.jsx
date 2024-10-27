@@ -12,6 +12,7 @@ import { Profile } from "./components/profile/Profile.jsx";
 import { ChatRoom } from "./components/chats/ChatRoom.jsx";
 import { RoomProvider } from "./contexts/RoomContext.jsx";
 import { ToastProvider } from "./hooks/useToast.jsx";
+import { AdminDashboard } from "./components/Admin.jsx";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
                     <Route path="/profile" element={<Profile />} />
                   </Route>
                   <Route path="/choose" element={<ChoosePage />} />
+                  <Route path="/admin" element={<AdminDashboard />} />
                 </Route>
               </Routes>
             </ThemeProvider>

@@ -40,7 +40,6 @@ export default function Home() {
           <Link
             to={"/admin"}
             className="bg-blue-500 hover:bg-blue-600 p-2 text-white w-fit rounded-md"
-            onClick={logout}
           >
             Admin Dashboard
           </Link>

@@ -24,6 +24,8 @@ export const AdminDashboard = () => {
     e.key === "Escape" ? setShowUpdateModal(false) : "";
 
   const handleDeleteUser = async (id) => {
+    const u = users.filter((user) => user._id !== id);
+    setUsers(u);
     deleteUser(id);
   };
 
@@ -32,7 +34,6 @@ export const AdminDashboard = () => {
     setUser(user);
     console.log(user);
   };
-
 
   if (role !== "FACULTY") {
     return (
@@ -118,7 +119,7 @@ export const AdminDashboard = () => {
   );
 };
 
-const UpadteModal = ({ user, onClose }) => {
+const UpadteModal = ({ user, onClose, setUsers }) => {
   const ROLES = ["fy", "sy", "ty", "by", "alumni"];
   const [newRole, setNewRole] = useState("");
 

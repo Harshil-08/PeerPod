@@ -22,9 +22,7 @@ export const ChoosePage = () => {
       return;
     } else {
       try {
-        const { message, data, success } = await updateUserRole(user._id, {
-          role: role.toUpperCase(),
-        });
+        const { message, data, success } = await updateUserRole(user._id, role);
         if (success) {
           toaster.success({
             message: message,

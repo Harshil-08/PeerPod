@@ -2,9 +2,14 @@ import axios from "axios";
 
 export const updateUserRole = async (id, role) => {
   try {
-    const user = await axios.post(`/api/users/${id}`, role, {
-      withCredentials: true,
-    });
+    console.log("role in usr", role);
+    const user = await axios.post(
+      `/api/users/${id}`,
+      { role: role.toUpperCase() },
+      {
+        withCredentials: true,
+      }
+    );
     return {
       message: user.data.message,
       data: user.data.data,
@@ -59,7 +64,7 @@ export const updateUser = async (id, updatedProfile) => {
 };
 export const deleteUser = async (id) => {
   try {
-    const res = await axios.delete(`/api/users/`, id);
+    const res = await axios.delete(`/api/users/${id}`);
     console.log(res.data);
     return {
       message: "Profile deleted Successfully!",

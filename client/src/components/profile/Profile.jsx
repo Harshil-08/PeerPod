@@ -109,7 +109,7 @@ export const Profile = () => {
         )}
       </div>
 
-      <div className="md:col-span-3 overflow-y-auto max-h-[45rem] flex flex-col gap-4 rounded-md p-5 bg-gray-100 border border-black/20 dark:border-gray-400 border-dashed dark:bg-neutral-800">
+      <div className="md:col-span-3 overflow-y-auto h-[45rem] flex flex-col gap-4 rounded-md p-5 bg-gray-100 border border-black/20 dark:border-gray-400 border-dashed dark:bg-neutral-800">
         <h1 className="text-xl font-bold mb-2">Description</h1>
         <p
           dangerouslySetInnerHTML={{

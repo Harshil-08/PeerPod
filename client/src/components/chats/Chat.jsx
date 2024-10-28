@@ -78,7 +78,7 @@ export const Chat = ({ roomId }) => {
 	useEffect(() => {
 		if (!deleted) {
 			setTimeout(() => {
-					chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+				chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
 			}, 100);
 		}
 
@@ -116,8 +116,8 @@ export const Chat = ({ roomId }) => {
 		console.log("Deleting message", messageId);
 		setDeleted(true);
 		toaster.success({
-			message: "Message Deleted!"
-		})
+			message: "Message Deleted!",
+		});
 		socketRef.current.emit("deleteMessage", messageId);
 	};
 
@@ -286,11 +286,11 @@ export const Chat = ({ roomId }) => {
 							</div>
 						)}
 						{mention && mentionList.length > 0 && (
-							<div className="flex flex-col justify-between max-h-48 bg-white">
+							<div className="flex flex-col justify-between dark:bg-[#262626] max-h-48 bg-white overflow-y-scroll rounded-lg p-1">
 								{mentionList.map((user, index) => (
 									<div
 										key={user._id}
-										className={`flex items-center p-2 gap-2 cursor-pointer ${highlightedIndex === index ? "bg-gray-200" : ""}`}
+										className={`flex items-center p-2 gap-2 cursor-pointer ${highlightedIndex === index ? "bg-gray-200 dark:bg-[#313244]" : ""}`}
 										onClick={() => {
 											setNewMessage(
 												(prev) =>
